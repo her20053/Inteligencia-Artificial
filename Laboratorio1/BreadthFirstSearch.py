@@ -1,5 +1,4 @@
 from PIL import Image
-
 class BFS():
     
     def __init__(self, sharpImagePath):
@@ -50,6 +49,8 @@ class BFS():
         for x in range(self.width):
             for y in range(self.height):
                 pixel = self.image.getpixel((x, y))
+                if len(pixel) == 4:
+                    pixel = pixel[:3]
                 self.todosColores.append(pixel)
                 if pixel == (255, 255, 255):
                     self.walkable.add((x, y))
@@ -84,7 +85,7 @@ class BFS():
             # Se revisa si la celda en la que estamos es una de meta.
             if self.goalTest(celdaActual):
                 # Se acaba la iteracion porque hemos llegado al destino.
-                # print("se llego!")
+                print("Si se encontro solucion")
                 break
             
             # Se revisa que acciones son posibles desde la celda en la que estamos
@@ -106,11 +107,8 @@ class BFS():
         
         while celda != self.start:
             
-            try:
-                pathRecorrido[pathBFS[celda]] = celda
-                celda = pathBFS[celda]
-            except:
-                pass
+            pathRecorrido[pathBFS[celda]] = celda
+            celda = pathBFS[celda]
             
             
         # print(pathRecorrido)
