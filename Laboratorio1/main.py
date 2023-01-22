@@ -7,3 +7,4 @@ resp = maze.beginSearch()
 if resp:
     
     maze.drawSolution('Soluciones/Solucion20x20.bmp')
+    maze.mazeUnavailable()

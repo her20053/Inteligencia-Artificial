@@ -10,6 +10,7 @@ class GraphSearchAlgorithm():
         self.colores = []
         self.walkable = set()
         self.recorridos = []
+        self.puntosNoAlcanzados = 0
         self.load_image()
     
     def load_image(self):
@@ -39,6 +40,11 @@ class GraphSearchAlgorithm():
                 # Si el color del pixel es verde:
                 elif pixel == (0, 255, 0):
                     self.goals.add((x, y))
+    
+    def mazeUnavailable(self):
+        # Le dejamos saber si existen puntos que no se lograron alcanzar al usuario:
+        if self.puntosNoAlcanzados > 0:
+            print("No se han podido alcanzar los siguientes puntos: ", self.goals)
     
     def getMazeInfo(self):
         
@@ -195,6 +201,7 @@ class GraphSearchAlgorithm():
             
             else:
                 # No tiene solucion el laberinto propuesto. Se retorna un falso:
+                self.puntosNoAlcanzados += 1
                 return False
 
         
