@@ -34,7 +34,7 @@ class GraphSearchAlgorithm():
                     self.walkable.add((x, y))
                     
                 # Si el color del pixel es rojo:     
-                elif pixel == (255, 0, 0):
+                elif pixel == (254, 0, 0):
                     self.start = (x,y)
                 
                 # Si el color del pixel es verde:
