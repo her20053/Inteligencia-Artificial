@@ -1,9 +1,9 @@
-from BreadthFirstSearch import BFS
+from Modulos.GraphSearch import GraphSearchAlgorithm
 
-mapa = BFS('Maze.bmp')
+maze = GraphSearchAlgorithm('Laberintos/Maze20x20.bmp')
 
-# mapa.getMapColors()
+resp = maze.beginSearch()
 
-path = mapa.performAlgorithm()
-
-mapa.drawSolution(path, 'Solucion2.bmp')
+if resp:
+    
+    maze.drawSolution('Soluciones/Solucion20x20.bmp')

@@ -102,7 +102,7 @@ class BFS():
         
         pathRecorrido = {}
         
-        celda = self.goals[0]
+        celda = self.goals[1]
         # print(self.goals)
         
         while celda != self.start:
