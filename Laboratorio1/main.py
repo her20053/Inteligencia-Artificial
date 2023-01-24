@@ -22,13 +22,13 @@ from Modulos.GraphSearch import GraphSearchAlgorithm
     
 #     print("No existe solucion al laberinto proporcionado.")
     
-maze = GraphSearchAlgorithm('laberinto_discreto.bmp')
+maze = GraphSearchAlgorithm('Laberintos/Maze20x20.bmp')
 
 resp = maze.beginSearch()
 
 if resp:
     
-    maze.drawSolution('Soluciones/laberinto_discreto_solucion.bmp')
+    maze.drawSolution('Soluciones/Solucion20x20.bmp')
     maze.mazeUnavailable()
 
 else:
