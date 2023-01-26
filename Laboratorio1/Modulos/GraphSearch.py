@@ -1,4 +1,5 @@
 from PIL import Image
+from progress.bar import Bar
 
 class GraphSearchAlgorithm():
     
@@ -34,7 +35,8 @@ class GraphSearchAlgorithm():
                     self.walkable.add((x, y))
                     
                 # Si el color del pixel es rojo:     
-                elif pixel == (255, 0, 0):
+                elif pixel == (254, 0, 0) or pixel == (255, 0, 0):
+                    self.walkable.add((x, y))
                     self.start = (x,y)
                 
                 # Si el color del pixel es verde:
@@ -143,12 +145,14 @@ class GraphSearchAlgorithm():
         queue = [self.start]
         
         # Creamos una lista de espacios que hemos explorado y le agregamos el punto de partida:
-        celdasExploradas = [self.start]
+        celdasExploradas = set()
+        celdasExploradas.add(self.start)
         
         # Creamos un diccionario que nos indique los movimientos que se han tomado en el algoritmo:
         caminosRealizados = {}
         
         # Creamos un ciclo infinito hasta que encontremos una solucion o la frontera este vacia:
+        bar = Bar('Analizando celdas...', max=len(self.walkable))
         while True:
         
             # La frontera aun tiene celdas que explorar
@@ -159,10 +163,16 @@ class GraphSearchAlgorithm():
                 
                 # Agregamos la celda a la lista de celdas ya explorada:
                 celdasExploradas.append(celda)
+                bar.next()
+                
+                # print("Analizando Celda: ", celda)
                 
                 # Verificamos a que celdas nos podemos mover desde la posicion actual (s):
                 
                 movimientos = self.actions(celda)
+                
+                # print("Con posible movimiento a: ", movimientos)
+                # print("Con celdas exploradas: ", len(celdasExploradas) ," de ", len(self.walkable))
                 
                 # Verificamos que uno de los siguientes movimientos no sean ya la meta:
                 
@@ -202,6 +212,7 @@ class GraphSearchAlgorithm():
             else:
                 # No tiene solucion el laberinto propuesto. Se retorna un falso:
                 self.puntosNoAlcanzados += 1
+                bar.finish()
                 return False
 
         

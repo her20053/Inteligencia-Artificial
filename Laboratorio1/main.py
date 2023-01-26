@@ -22,7 +22,7 @@ from Modulos.GraphSearch import GraphSearchAlgorithm
     
 #     print("No existe solucion al laberinto proporcionado.")
     
-maze = GraphSearchAlgorithm('Laberintos/Maze20x20.bmp')
+maze = GraphSearchAlgorithm('Laberintos/LaberintoComplejo1.bmp')
 
 resp = maze.beginSearch()
 
