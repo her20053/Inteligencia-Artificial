@@ -67,8 +67,6 @@ class AStarAlgorithm():
     
     def dibujar_solucion(self, nombre_imagen):
 
-        # self.c_camino, self.c_actual
-
         path = []
         current = self.c_actual
         while current != None:
@@ -82,7 +80,7 @@ class AStarAlgorithm():
         
         pixelesCopia = imagenCopia.load()
         
-        # print(path)
+        barra_progreso = Bar(' [A*A] Dibujando celdas...', max=self.image.width * self.image.height, suffix='%(percent)d%%')
         
         for x in range(len(self.matriz_pixeles)):
             
@@ -99,7 +97,9 @@ class AStarAlgorithm():
                         pixel = (100 + color, 0 , 200 + color)
                 
                 pixelesCopia[x,y] = pixel
-                
+                barra_progreso.next()
+        
+        barra_progreso.finish()        
         imagenCopia.save(nombre_imagen)        
         
     

@@ -22,6 +22,8 @@ class BreadthFirstAlgorithm():
         
         pixelesCopia = imagenCopia.load()
         
+        barra_progreso = Bar(' [BFA] Dibujando celdas...', max=self.image.width * self.image.height, suffix='%(percent)d%%')
+        
         for x in range(self.image.width):
             
             for y in range(self.image.height):
@@ -36,7 +38,9 @@ class BreadthFirstAlgorithm():
                         pixel = (0, 100 + x + y, 75 + x + y)
         
                 pixelesCopia[x,y] = pixel
-        
+                barra_progreso.next()
+                
+        barra_progreso.finish()
         imagenCopia.save(nombre_imagen)
     
     def cargar_imagen(self):

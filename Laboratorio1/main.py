@@ -2,11 +2,12 @@ from modulos.procesadorDeImagen import disminuir_imagen_original
 from modulos.algoritmoBF import BreadthFirstAlgorithm
 from modulos.algoritmoAs import AStarAlgorithm
 from modulos.algoritmoDF import DepthFirstAlgorithm
+from PIL import Image, ImageFilter
 
 def programa():
     
     # Realizamos la disminucion del laberinto:
-    disminuir_imagen_original("laberintos/Laberinto2.bmp", 5)
+    disminuir_imagen_original("laberintos/Laberinto2.bmp", 5) 
     
     # Aplicamos el algoritmo Breadth First a la imagen reescalada:
     bfs = BreadthFirstAlgorithm("laberintos/imagen_reescalada.bmp")
@@ -22,7 +23,6 @@ def programa():
     dfs = DepthFirstAlgorithm("laberintos/imagen_reescalada.bmp")
     res = dfs.start_search()
     dfs.dibujar_solucion("laberintos/solucion_laberintoDF.bmp") if res else print("No se encontro solucion!")
-    
 
 if __name__ == '__main__':
     programa()

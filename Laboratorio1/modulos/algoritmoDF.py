@@ -55,6 +55,10 @@ class DepthFirstAlgorithm():
         
         pixelesCopia = imagenCopia.load()
         
+        # barra_progreso = Bar(' [DFA] Dibujando celdas...', max=self.image.width * self.image.height, suffix='%(percent)d%%')
+        barra_progreso = Bar(' [DFA] Dibujando celdas...', max=self.image.width * self.image.height, suffix='%(percent)d%%')
+        
+        
         for x in range(self.image.width):
             
             for y in range(self.image.height):
@@ -68,7 +72,9 @@ class DepthFirstAlgorithm():
                         pixel = (255,  x + y ,0)
         
                 pixelesCopia[x,y] = pixel
+                barra_progreso.next()
         
+        barra_progreso.finish()
         imagenCopia.save(nombre_imagen)
     
     def actions(self, celda):
