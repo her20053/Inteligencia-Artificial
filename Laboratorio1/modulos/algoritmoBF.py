@@ -1,20 +1,45 @@
-from PIL import Image
 from progress.bar import Bar
+from PIL import Image
 
-class GraphSearchAlgorithm():
+class BreadthFirstAlgorithm():
     
-    def __init__(self, ImagePath):
-        self.image = Image.open(ImagePath)
+    def __init__(self, path_imagen):
+        self.image = Image.open(path_imagen)
         self.width, self.height = self.image.size
         self.start = None
         self.goals = set()
         self.colores = []
         self.walkable = set()
         self.recorridos = []
-        self.puntosNoAlcanzados = 0
-        self.load_image()
+        
+        self.cargar_imagen()
     
-    def load_image(self):
+    def dibujar_solucion(self, nombre_imagen):
+        
+        imagenCopia = Image.new("RGB", self.image.size)
+        
+        pixelesOriginales = self.image.load()
+        
+        pixelesCopia = imagenCopia.load()
+        
+        for x in range(self.image.width):
+            
+            for y in range(self.image.height):
+                
+                pixel = pixelesOriginales[x,y]
+                
+                for s in self.recorridos:
+
+                    if (x,y) == s:
+                        
+                        # pixel = ((x + y),255,0)
+                        pixel = (0, 100 + x + y, 75 + x + y)
+        
+                pixelesCopia[x,y] = pixel
+        
+        imagenCopia.save(nombre_imagen)
+    
+    def cargar_imagen(self):
         
         for x in range(self.width):
             
@@ -35,7 +60,7 @@ class GraphSearchAlgorithm():
                     self.walkable.add((x, y))
                     
                 # Si el color del pixel es rojo:     
-                elif pixel == (254, 0, 0) or pixel == (255, 0, 0):
+                elif pixel == (255, 0, 0):
                     self.walkable.add((x, y))
                     self.start = (x,y)
                 
@@ -43,26 +68,9 @@ class GraphSearchAlgorithm():
                 elif pixel == (0, 255, 0):
                     self.goals.add((x, y))
     
-    def mazeUnavailable(self):
-        # Le dejamos saber si existen puntos que no se lograron alcanzar al usuario:
-        if self.puntosNoAlcanzados > 0:
-            print("No se han podido alcanzar los siguientes puntos: ", self.goals)
-    
-    def getMazeInfo(self):
-        
-        print("Posiciones walkable: ", self.walkable)
-        print("Posiciones destino:  ", self.goals)
-        print("Posicion de inicio:  ", self.start)
-        print("")
-        print("Colores que se presentan en la imagen:")
-        print("")
-        dicc = {}
-        for c in self.colores:
-            dicc[c] = 0
-        for c in self.colores:
-            dicc[c] = dicc[c] + 1
-        for k,v in dicc.items():
-            print("RGB " + str(k) + " | cantidad: " + str(v)) 
+    def goalTest(self, celda):
+        # Retornamos si la celda esta contenida en las casillas de meta o no:
+        return (celda in self.goals)
     
     def actions(self, celda):
         
@@ -93,11 +101,6 @@ class GraphSearchAlgorithm():
         # Retornamos los movimientos que ubicamos:
         return movimientosPosibles
     
-    def goalTest(self, celda):
-        
-        # Retornamos si la celda esta contenida en las casillas de meta o no:
-        return (celda in self.goals)
-    
     def obtenerCamino(self, celda, trazos):
         
         recorrido = {}
@@ -110,51 +113,27 @@ class GraphSearchAlgorithm():
             
         for k,v in recorrido.items():
             posiciones.append(v)
-            
-        self.recorridos.append(posiciones)
-
-    def drawSolution(self, fileName):
         
-        imagenCopia = Image.new("RGB", self.image.size)
-        
-        pixelesOriginales = self.image.load()
-        
-        pixelesCopia = imagenCopia.load()
-        
-        for x in range(self.image.width):
-            
-            for y in range(self.image.height):
-                
-                pixel = pixelesOriginales[x,y]
-                
-                for solucion in self.recorridos:
-                
-                    for s in solucion:
-                        
-                        if (x,y) == s:
-                            
-                            pixel = (255,255,0)
-            
-                    pixelesCopia[x,y] = pixel
-        
-        imagenCopia.save(fileName)
-
-    def beginSearch(self):
+        # Retornamos el recorrido que realizo el algoritmo:    
+        self.recorridos = posiciones
+    
+    def start_search(self):
         
         # Comenzamos creando una frontera/queue con el punto de partida:
         queue = [self.start]
         
         # Creamos una lista de espacios que hemos explorado y le agregamos el punto de partida:
-        celdasExploradas = set()
-        celdasExploradas.add(self.start)
-        
+        celdasExploradas = [self.start]
+
         # Creamos un diccionario que nos indique los movimientos que se han tomado en el algoritmo:
         caminosRealizados = {}
-        
+
+        # Creamos una barra de progreso:
+        barra_progreso = Bar(' [BFA] Analizando celdas...', max=len(self.walkable))
+
         # Creamos un ciclo infinito hasta que encontremos una solucion o la frontera este vacia:
-        bar = Bar('Analizando celdas...', max=len(self.walkable))
         while True:
-        
+            
             # La frontera aun tiene celdas que explorar
             if len(queue):
                 
@@ -163,16 +142,10 @@ class GraphSearchAlgorithm():
                 
                 # Agregamos la celda a la lista de celdas ya explorada:
                 celdasExploradas.append(celda)
-                bar.next()
-                
-                # print("Analizando Celda: ", celda)
                 
                 # Verificamos a que celdas nos podemos mover desde la posicion actual (s):
                 
                 movimientos = self.actions(celda)
-                
-                # print("Con posible movimiento a: ", movimientos)
-                # print("Con celdas exploradas: ", len(celdasExploradas) ," de ", len(self.walkable))
                 
                 # Verificamos que uno de los siguientes movimientos no sean ya la meta:
                 
@@ -183,13 +156,7 @@ class GraphSearchAlgorithm():
                         # Se ha llegado al destino:
                         self.obtenerCamino(celda, caminosRealizados)
                         
-                        # Revisamos si existen varios goals, en caso de ser asi, eliminamos de la lista el alcanzado y comenzamos la busqueda del otro:
-                        
-                        if len(self.goals) > 1:
-                            
-                            self.goals.remove(movimiento)
-                            
-                            self.beginSearch()
+                        barra_progreso.finish()
                         
                         return True
             
@@ -205,14 +172,16 @@ class GraphSearchAlgorithm():
                         
                         queue.append(movimiento)
                         
+                        celdasExploradas.append(movimiento)
+                        
                         # Declaramos en el camino hacia donde fue y de donde vino:
                         
                         caminosRealizados[movimiento] = celda
+                        
+                        barra_progreso.next()
             
             else:
+                
+                barra_progreso.finish()
                 # No tiene solucion el laberinto propuesto. Se retorna un falso:
-                self.puntosNoAlcanzados += 1
-                bar.finish()
                 return False
-
-        
