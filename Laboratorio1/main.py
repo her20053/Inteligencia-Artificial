@@ -2,7 +2,6 @@ from modulos.procesadorDeImagen import disminuir_imagen_original
 from modulos.algoritmoBF import BreadthFirstAlgorithm
 from modulos.algoritmoAs import AStarAlgorithm
 from modulos.algoritmoDF import DepthFirstAlgorithm
-from PIL import Image, ImageFilter
 
 def programa():
     
